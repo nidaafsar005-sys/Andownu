@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: andown-backend
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - CANONICAL_DOMAIN=https://www.andown.in
+      - FILE_EXPIRATION_MINUTES=45
+      - MAX_DOWNLOAD_SIZE_MB=500
+    ports:
+      - "8000:8000"
+    volumes:
+      - andown_storage:/app/storage
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: andown-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  andown_storage:
